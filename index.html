@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #eef2f3;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            color: #d9534f; /* Red color for error messages */
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .toggle-btn:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login & Signup</h2>
+    <form id="auth-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+        <button type="submit" id="login-btn">Login</button>
+        <button type="button" id="signup-btn">Signup</button>
+    </form>
+    <div id="message"></div>
+    <button class="toggle-btn" id="toggle-btn">Switch to Signup</button>
+</div>
+
+<script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyD2BFeSw4PmxK3yduSdzGhjAdJeRn5OmiY",
+        authDomain: "authlogin-ce398.firebaseapp.com",
+        projectId: "authlogin-ce398",
+        storageBucket: "authlogin-ce398.appspot.com",
+        messagingSenderId: "794118269542",
+        appId: "1:794118269542:web:3f7efdee112426f1a95ba7",
+        measurementId: "G-XCL2S0BHHB"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const analytics = firebase.analytics(app);
+    const auth = firebase.auth();
+
+    // Handle login
+    document.getElementById('login-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                document.getElementById('message').innerHTML = "Login successful!";
+                console.log('Logged in user:', user);
+                // Redirect to the home page or dashboard
+                // window.location.href = "home.html"; // Uncomment and replace with your dashboard page
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+                document.getElementById('message').innerHTML = `Error: ${errorMessage}`;
+                console.error('Login error:', errorMessage);
+            });
+    });
+
+    // Handle signup
+    document.getElementById('signup-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                document.getElementById('message').innerHTML = "Signup successful!";
+                console.log('User signed up:', user);
+                // Redirect to the login page or home page
+                // window.location.href = "home.html"; // Uncomment and replace with your dashboard page
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+                document.getElementById('message').innerHTML = `Error: ${errorMessage}`;
+                console.error('Signup error:', errorMessage);
+            });
+    });
+
+    // Toggle between Login and Signup
+    document.getElementById('toggle-btn').addEventListener('click', () => {
+        const authForm = document.getElementById('auth-form');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const toggleBtn = document.getElementById('toggle-btn');
+
+        if (loginBtn.style.display === "none") {
+            loginBtn.style.display = "inline";
+            signupBtn.style.display = "none";
+            toggleBtn.innerText = "Switch to Signup";
+        } else {
+            loginBtn.style.display = "none";
+            signupBtn.style.display = "inline";
+            toggleBtn.innerText = "Switch to Login";
+        }
+    });
+</script>
+
+</body>
+</html>
